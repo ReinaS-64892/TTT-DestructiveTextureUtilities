@@ -70,7 +70,7 @@ namespace net.rs64.DestructiveTextureUtilities
                     var targetRt = RenderTexture.GetTemporary(separateTarget.width, separateTarget.height, 32);
                     targetRt.Clear();
 
-                    TransTexture.TransTextureToRenderTexture(targetRt, separateTarget, new TransTexture.TransData(island.triangles, uv, uv), _padding, null, true);
+                    TransTexture.ForTrans(targetRt, separateTarget, new TransTexture.TransData<Vector2>(island.triangles, uv, uv), _padding, null, true);
 
                     var tex = targetRt.CopyTexture2D();
                     RenderTexture.ReleaseTemporary(targetRt);
