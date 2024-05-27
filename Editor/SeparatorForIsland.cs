@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using net.rs64.TexTransCore;
-using net.rs64.TexTransCore.TransTextureCore.Utils;
+using net.rs64.TexTransCore.Utils;
 using net.rs64.TexTransCore.Island;
-using net.rs64.TexTransTool.EditorIsland;
-using net.rs64.TexTransCore.TransTextureCore;
 using net.rs64.TexTransTool.Utils;
 using System.IO;
 
@@ -61,7 +59,7 @@ namespace net.rs64.DestructiveTextureUtilities
 
             foreach (var subTri in _separateReferenceMesh.GetSubTriangleIndex())
             {
-                var islands = IslandUtility.UVtoIsland(subTri, uv, new EditorIslandCache());
+                var islands = IslandUtility.UVtoIsland(subTri, uv);
 
                 foreach (var island in islands)
                 {
