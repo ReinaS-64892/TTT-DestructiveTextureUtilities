@@ -7,77 +7,113 @@ using net.rs64.TexTransCore.Utils;
 using net.rs64.TexTransCore.Island;
 using net.rs64.TexTransTool.Utils;
 using System.IO;
+using UnityEngine.UIElements;
+using UnityEditor.UIElements;
+using net.rs64.TexTransTool;
+using System;
+using net.rs64.TexTransTool.IslandSelector;
+using UnityEditor.SearchService;
+using net.rs64.TexTransCore.Decal;
+using System.Linq;
+using Unity.Collections;
 
 namespace net.rs64.DestructiveTextureUtilities
 {
-    public class SeparatorForIsland : EditorWindow
+    internal class SeparatorForIsland : DestructiveUtility
     {
-        [MenuItem("Tools/TexTransTool/DestructiveTextureUtilities/SeparatorForIsland")]
-        static void ShowWindow()
+
+        [SerializeField] Renderer SeparateTarget;
+        [SerializeField] AbstractIslandSelector IslandSelector;
+        [SerializeField] float Padding = 5f;
+        [SerializeField] bool HighQualityPadding = true;
+        [SerializeField] TexTransTool.PropertyName TargetPropertyName = TexTransTool.PropertyName.DefaultValue;
+
+
+
+        public override void CreateUtilityPanel(VisualElement rootElement)
         {
-            var window = GetWindow<SeparatorForIsland>();
-            window.titleContent = new GUIContent(nameof(SeparatorForIsland));
+            var serializedObject = new SerializedObject(this);
+
+            rootElement.hierarchy.Add(new Label("テクスチャをアイランド単位で分割した個別のテクスチャーにします。"));
+
+            rootElement.hierarchy.Add(CreateVIProperyFiled(serializedObject.FindProperty(nameof(SeparateTarget))));
+            rootElement.hierarchy.Add(CreateVIProperyFiled(serializedObject.FindProperty(nameof(IslandSelector))));
+            rootElement.hierarchy.Add(CreateVIProperyFiled(serializedObject.FindProperty(nameof(Padding))));
+            rootElement.hierarchy.Add(CreateVIProperyFiled(serializedObject.FindProperty(nameof(HighQualityPadding))));
+            rootElement.hierarchy.Add(CreateVIProperyFiled(serializedObject.FindProperty(nameof(TargetPropertyName))));
+
+            var button = new Button(Separate);
+            button.text = "Execute";
+            rootElement.hierarchy.Add(button);
         }
 
-        [SerializeField] Texture2D _separateTarget;
-        [SerializeField] Mesh _separateReferenceMesh;
-        [SerializeField] float _padding = 2.5f;
-        [SerializeField] bool _HighQualityPadding = true;
-        [SerializeField] string _outputDirectory;
-
-        private void OnGUI()
+        private PropertyField CreateVIProperyFiled(SerializedProperty serializedProperty)
         {
-            _separateTarget = EditorGUILayout.ObjectField("SeparateTarget", _separateTarget, typeof(Texture2D), true) as Texture2D;
-            _separateReferenceMesh = EditorGUILayout.ObjectField("SeparateReferenceMesh", _separateReferenceMesh, typeof(Mesh), true) as Mesh;
-            _padding = EditorGUILayout.FloatField("Padding", _padding);
-            _HighQualityPadding = EditorGUILayout.Toggle("HighQualityPadding", _HighQualityPadding);
-            EditorGUILayout.LabelField(_outputDirectory);
-            if (GUILayout.Button("OutputDirectory Select"))
-            {
-                _outputDirectory = EditorUtility.OpenFolderPanel("OutputDirectory", "Assets", "Assets");
-            }
-
-            EditorGUILayout.Space();
-
-            EditorGUI.BeginDisabledGroup(_separateTarget == null || _separateReferenceMesh == null || _outputDirectory == null);
-            if (GUILayout.Button("SeparatorForIsland !"))
-            {
-                Separate();
-            }
-            EditorGUI.EndDisabledGroup();
-
+            var propertyField = new PropertyField();
+            propertyField.BindProperty(serializedProperty);
+            return propertyField;
         }
-
 
         void Separate()
         {
-            var separateTarget = _separateTarget.TryGetUnCompress();
-            var uv = new List<Vector2>();
-            _separateReferenceMesh.GetUVs(0, uv);
-
-            var count = 0;
-
-            foreach (var subTri in _separateReferenceMesh.GetSubTriangleIndex())
+            if (SeparateTarget == null) { EditorUtility.DisplayDialog("SeparatorForIsland - 実行不可能", "SeparateTarget が存在しません！", "Ok"); }
+            if (SeparateTarget.GetMesh() == null) { EditorUtility.DisplayDialog("SeparatorForIsland - 実行不可能", "SeparateTarget が SkiedMeshRenderer か MeshRenderer ではないか、Meshが割り当てられていません!", "Ok"); }
+            try
             {
-                var islands = IslandUtility.UVtoIsland(subTri, uv);
+                EditorUtility.DisplayProgressBar("SeparatorForIsland", "Start", 0);
+                var meshData = new MeshData(SeparateTarget);
+                var outputDirectory = AssetSaveHelper.CreateUniqueNewFolder(SeparateTarget.name + "-IslandSeparateResult");
 
-                foreach (var island in islands)
+                for (var subMeshI = 0; meshData.Triangles.Length > subMeshI; subMeshI += 1)
                 {
-                    count += 1;
+                    EditorUtility.DisplayProgressBar("SeparatorForIsland", "SubMesh-" + subMeshI, subMeshI / (float)meshData.Triangles.Length);
+                    var progressStartAndEnd = (subMeshI / (float)meshData.Triangles.Length, (subMeshI + 1) / (float)meshData.Triangles.Length);
+                    if (SeparateTarget.sharedMaterials.Length <= subMeshI) { continue; }
+                    var material = SeparateTarget.sharedMaterials[subMeshI];
+                    var texture2D = material.GetTexture(TargetPropertyName) as Texture2D;
+                    if (texture2D == null) { continue; }
+                    var fullTexture2D = texture2D.TryGetUnCompress();
 
-                    var targetRt = RenderTexture.GetTemporary(separateTarget.width, separateTarget.height, 32);
-                    targetRt.Clear();
+                    var islands = IslandUtility.UVtoIsland(meshData.TriangleIndex[subMeshI].AsList(), meshData.VertexUV.AsList()).ToArray();
 
-                    TransTexture.ForTrans(targetRt, separateTarget, new TransTexture.TransData<Vector2>(island.triangles, uv, uv), _padding, null, true);
+                    BitArray selectBitArray;
+                    if (IslandSelector != null)
+                    {
+                        var islandDescriptions = new IslandDescription[islands.Length];
+                        Array.Fill(islandDescriptions, new IslandDescription(meshData.Vertices, meshData.VertexUV, SeparateTarget, subMeshI));
+                        selectBitArray = IslandSelector.IslandSelect(islands, islandDescriptions);
+                    }
+                    else { selectBitArray = new(islands.Length, true); }
 
-                    var tex = targetRt.CopyTexture2D();
-                    RenderTexture.ReleaseTemporary(targetRt);
+                    for (var islandIndex = 0; islands.Length > islandIndex; islandIndex += 1)
+                    {
+                        EditorUtility.DisplayProgressBar("SeparatorForIsland", "SubMesh-" + subMeshI + "-" + islandIndex, Mathf.Lerp(progressStartAndEnd.Item1, progressStartAndEnd.Item2, (islandIndex + 1) / (float)islands.Length));
+                        if (!selectBitArray[islandIndex]) { continue; }
 
-                    File.WriteAllBytes(Path.Combine(_outputDirectory, $"{_separateTarget.name}-{count}.png"), tex.EncodeToPNG());
+                        var targetRt = RenderTexture.GetTemporary(fullTexture2D.width, fullTexture2D.height, 32);
+                        targetRt.Clear();
+
+                        using (var triNa = new NativeArray<TriangleIndex>(islands[islandIndex].triangles.Count, Allocator.TempJob))
+                        {
+                            var writeSpan = triNa.AsSpan();
+                            for (var i = 0; writeSpan.Length > i; i += 1) { writeSpan[i] = islands[islandIndex].triangles[i]; }
+                            TransTexture.ForTrans(targetRt, fullTexture2D, new TransTexture.TransData<Vector2>(triNa, meshData.VertexUV, meshData.VertexUV), Padding, null, true);
+                        }
+                        var tex = targetRt.CopyTexture2D();
+                        RenderTexture.ReleaseTemporary(targetRt);
+
+                        File.WriteAllBytes(Path.Combine(outputDirectory, $"{subMeshI}-{islandIndex}.png"), tex.EncodeToPNG());
+                        UnityEngine.Object.DestroyImmediate(tex);
+                    }
+
+                    if (fullTexture2D != texture2D) { UnityEngine.Object.DestroyImmediate(fullTexture2D); }
                 }
             }
-
-
+            finally
+            {
+                EditorUtility.ClearProgressBar();
+                AssetDatabase.Refresh();
+            }
         }
     }
 }

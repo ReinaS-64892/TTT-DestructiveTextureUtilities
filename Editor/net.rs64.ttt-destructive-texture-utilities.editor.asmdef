@@ -1,8 +1,10 @@
 {
     "name": "net.rs64.ttt-destructive-texture-utilities.editor",
+    "rootNamespace": "",
     "references": [
-        "GUID:5282758b83062964bb8be6e82a433ef2",
-        "GUID:9bc83561c99cfbe4ba0457cda3f96218"
+        "net.rs64.tex-trans-core",
+        "net.rs64.tex-trans-tool.editor",
+        "net.rs64.tex-trans-tool.runtime"
     ],
     "includePlatforms": [
         "Editor"
