@@ -47,17 +47,12 @@ namespace net.rs64.DestructiveTextureUtilities
             rootElement.hierarchy.Add(button);
         }
 
-        private PropertyField CreateVIProperyFiled(SerializedProperty serializedProperty)
-        {
-            var propertyField = new PropertyField();
-            propertyField.BindProperty(serializedProperty);
-            return propertyField;
-        }
+
 
         void Separate()
         {
-            if (SeparateTarget == null) { EditorUtility.DisplayDialog("SeparatorForIsland - 実行不可能", "SeparateTarget が存在しません！", "Ok"); }
-            if (SeparateTarget.GetMesh() == null) { EditorUtility.DisplayDialog("SeparatorForIsland - 実行不可能", "SeparateTarget が SkiedMeshRenderer か MeshRenderer ではないか、Meshが割り当てられていません!", "Ok"); }
+            if (SeparateTarget == null) { EditorUtility.DisplayDialog("SeparatorForIsland - 実行不可能", "SeparateTarget が存在しません！", "Ok"); return; }
+            if (SeparateTarget.GetMesh() == null) { EditorUtility.DisplayDialog("SeparatorForIsland - 実行不可能", "SeparateTarget が SkiedMeshRenderer か MeshRenderer ではないか、Meshが割り当てられていません!", "Ok"); return; }
             try
             {
                 EditorUtility.DisplayProgressBar("SeparatorForIsland", "Start", 0);

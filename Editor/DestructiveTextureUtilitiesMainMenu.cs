@@ -4,6 +4,7 @@ using UnityEngine.UIElements;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using UnityEditor.UIElements;
 
 namespace net.rs64.DestructiveTextureUtilities
 {
@@ -69,5 +70,12 @@ namespace net.rs64.DestructiveTextureUtilities
     {
         public virtual string DisplayName => GetType().Name;
         public abstract void CreateUtilityPanel(VisualElement rootElement);
+
+        protected PropertyField CreateVIProperyFiled(SerializedProperty serializedProperty)
+        {
+            var propertyField = new PropertyField();
+            propertyField.BindProperty(serializedProperty);
+            return propertyField;
+        }
     }
 }
