@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using net.rs64.TexTransCore;
@@ -8,13 +7,9 @@ using net.rs64.TexTransCore.Island;
 using net.rs64.TexTransTool.Utils;
 using System.IO;
 using UnityEngine.UIElements;
-using UnityEditor.UIElements;
-using net.rs64.TexTransTool;
 using System;
 using net.rs64.TexTransTool.IslandSelector;
-using UnityEditor.SearchService;
 using net.rs64.TexTransCore.Decal;
-using System.Linq;
 using Unity.Collections;
 
 namespace net.rs64.DestructiveTextureUtilities
@@ -97,7 +92,8 @@ namespace net.rs64.DestructiveTextureUtilities
                         var tex = targetRt.CopyTexture2D();
                         RenderTexture.ReleaseTemporary(targetRt);
 
-                        File.WriteAllBytes(Path.Combine(outputDirectory, $"{subMeshI}-{islandIndex}.png"), tex.EncodeToPNG());
+                        tex.name = $"{subMeshI}-{islandIndex}";
+                        AssetSaveHelper.SavePNG(outputDirectory,tex);
                         UnityEngine.Object.DestroyImmediate(tex);
                     }
 

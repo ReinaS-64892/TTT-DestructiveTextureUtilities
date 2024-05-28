@@ -1,20 +1,11 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using net.rs64.TexTransCore;
 using net.rs64.TexTransCore.Utils;
-using net.rs64.TexTransCore.Island;
-using net.rs64.TexTransTool.Utils;
 using System.IO;
 using UnityEngine.UIElements;
-using UnityEditor.UIElements;
 using net.rs64.TexTransTool;
-using net.rs64.TexTransTool.IslandSelector;
-using UnityEditor.SearchService;
-using net.rs64.TexTransCore.Decal;
 using System.Linq;
-using Unity.Collections;
 using net.rs64.TexTransTool.Build;
 
 namespace net.rs64.DestructiveTextureUtilities
@@ -23,7 +14,8 @@ namespace net.rs64.DestructiveTextureUtilities
     {
         public GameObject DomainRoot;
         public override void CreateUtilityPanel(VisualElement rootElement)
-        {            var serializedObject = new SerializedObject(this);
+        {
+            var serializedObject = new SerializedObject(this);
 
             rootElement.hierarchy.Add(new Label("アバターのスタックに関与するものをすべて抽出します。"));
 
@@ -72,8 +64,8 @@ namespace net.rs64.DestructiveTextureUtilities
             Graphics.Blit(setTex.Texture, tmpStack);
 
             var tex = tmpStack.CopyTexture2D();
-            var path = Path.Combine(SaveTextureDirectory, $"{StackTrace[dist].Count}-{SaveTextureName}.png");
-            File.WriteAllBytes(path, tex.EncodeToPNG());
+            tex.name = $"{StackTrace[dist].Count}-{SaveTextureName}";
+            var path = AssetSaveHelper.SavePNG(SaveTextureDirectory, tex);
             StackTrace[dist].Add(path);
 
             RenderTexture.ReleaseTemporary(tmpStack);

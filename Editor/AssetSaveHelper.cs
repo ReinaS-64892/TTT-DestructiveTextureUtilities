@@ -1,10 +1,7 @@
-using UnityEngine;
 using UnityEditor;
-using UnityEngine.UIElements;
-using System;
-using System.Linq;
-using System.Collections.Generic;
 using System.IO;
+using System;
+using UnityEngine;
 
 namespace net.rs64.DestructiveTextureUtilities
 {
@@ -20,5 +17,17 @@ namespace net.rs64.DestructiveTextureUtilities
             return AssetDatabase.GUIDToAssetPath(guid);
         }
 
+        internal static string SavePNG(string parentPath, UnityEngine.Texture2D tex2d)
+        {
+            var path = AssetDatabase.GenerateUniqueAssetPath(Path.Combine(parentPath, tex2d.name + ".png"));
+            File.WriteAllBytes(path, tex2d.EncodeToPNG());
+            return path;
+        }
+        internal static string SavePNG(UnityEngine.Texture2D tex2d)
+        {
+            var path = AssetDatabase.GenerateUniqueAssetPath(Path.Combine(SaveDirectory, tex2d.name + ".png"));
+            File.WriteAllBytes(path, tex2d.EncodeToPNG());
+            return path;
+        }
     }
 }

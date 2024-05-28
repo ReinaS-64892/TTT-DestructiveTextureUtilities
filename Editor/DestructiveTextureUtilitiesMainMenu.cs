@@ -39,7 +39,7 @@ namespace net.rs64.DestructiveTextureUtilities
 
             var utilitiesScrollView = new ScrollView();
             var scrollViewContainer = utilitiesScrollView.Q<VisualElement>("unity-content-container");
-            utilitiesScrollView.style.width = 140;
+            utilitiesScrollView.style.width = 240;
             root.hierarchy.Add(utilitiesScrollView);
 
             var utilityPanel = new VisualElement();
