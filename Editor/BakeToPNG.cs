@@ -30,7 +30,7 @@ namespace net.rs64.DestructiveTextureUtilities
 
         void Execute()
         {
-            if (DomainRoot == null) { EditorUtility.DisplayDialog("DomainRoot - 実行不可能", "DomainRoot が存在しません！", "Ok"); return; }
+            if (DomainRoot == null) { EditorUtility.DisplayDialog("BakeToPNG - 実行不可能", "DomainRoot が存在しません！", "Ok"); return; }
 
             var outputDirectory = AssetSaveHelper.CreateUniqueNewFolder(DomainRoot.name + "-BakeToPNGResult");
             var duplicate = Instantiate(DomainRoot);
