@@ -18,6 +18,7 @@ namespace net.rs64.DestructiveTextureUtilities
             var serializedObject = new SerializedObject(this);
 
             rootElement.hierarchy.Add(new Label("アバターのスタックに関与するものをすべて抽出します。"));
+            rootElement.hierarchy.Add(new Label("DomainRoot に抽出したい対象のルートを割り当ててください。"));
 
             rootElement.hierarchy.Add(CreateVIProperyFiled(serializedObject.FindProperty(nameof(DomainRoot))));
 
