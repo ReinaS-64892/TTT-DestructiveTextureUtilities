@@ -29,6 +29,7 @@ namespace net.rs64.DestructiveTextureUtilities
 
         void Extract()
         {
+            if (DomainRoot == null) { EditorUtility.DisplayDialog("StackExtractor - 実行不可能", "DomainRoot が存在しません！", "Ok"); return; }
             var duplicate = Instantiate(DomainRoot);
 
             var renderers = duplicate.GetComponentsInChildren<Renderer>().ToList();

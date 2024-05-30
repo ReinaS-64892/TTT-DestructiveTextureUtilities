@@ -23,6 +23,8 @@ namespace net.rs64.DestructiveTextureUtilities
 
         void Extract()
         {
+            if (TTTImportedImage == null) { EditorUtility.DisplayDialog("ImportedImageExtractor - 実行不可能", "TTTImportedImage が存在しません！", "Ok"); return; }
+
             var canvasBytes = File.ReadAllBytes(AssetDatabase.GetAssetPath(TTTImportedImage.CanvasDescription));
             var imageData = TTTImportedImage.LoadImage(canvasBytes);
 
