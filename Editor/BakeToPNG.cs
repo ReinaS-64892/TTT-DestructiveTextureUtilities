@@ -5,6 +5,7 @@ using System.Linq;
 using net.rs64.TexTransCore.Utils;
 using net.rs64.TexTransTool;
 using net.rs64.TexTransTool.Build;
+using net.rs64.TexTransTool.TextureAtlas.FineTuning;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -78,11 +79,23 @@ namespace net.rs64.DestructiveTextureUtilities
                 var path = AssetSaveHelper.SavePNG(_outputDirectory, sourceTex2D);
                 AssetDatabase.ImportAsset(path);
                 var importer = TextureImporter.GetAtPath(path) as TextureImporter;
-                importer.compressionQuality = compressKV.Value.Quality;
-                // switch (compressKV.Value.CompressFormat) //未実装なう！！！
-                // {
-                //     default:
-                // }
+                switch (compressKV.Value)
+                {
+                    default: { break; }
+                    case TextureCompress.RefAtImporterFormat refAt:
+                        {
+                            importer.compressionQuality = refAt.TextureImporter.compressionQuality;
+                            importer.textureCompression = refAt.TextureImporter.textureCompression;
+                            importer.alphaIsTransparency = refAt.TextureImporter.alphaIsTransparency;
+                            break;
+                        }
+                    case TextureCompressionData compressedData:
+                        {
+                            importer.compressionQuality = compressedData.CompressionQuality;
+                            importer.textureCompression = GetTextureFormatQualityUnity(compressedData.FormatQualityValue);
+                            break;
+                        }
+                }
 
                 importer.SaveAndReimport();
                 swapTexture2D.Add(sourceTex2D, AssetDatabase.LoadAssetAtPath<Texture2D>(path));
@@ -90,7 +103,19 @@ namespace net.rs64.DestructiveTextureUtilities
 
             return swapTexture2D;
         }
+        public TextureImporterCompression GetTextureFormatQualityUnity(FormatQuality formatQuality)
+        {
+            switch (formatQuality)
+            {
+                case FormatQuality.None: { return TextureImporterCompression.Uncompressed; }
+                case FormatQuality.Low: { return TextureImporterCompression.CompressedLQ; }
+                default:
+                case FormatQuality.Normal: { return TextureImporterCompression.Compressed; }
+                case FormatQuality.High: { return TextureImporterCompression.CompressedHQ; }
+            }
+        }
     }
+
 
 
 }
