@@ -76,6 +76,7 @@ namespace net.rs64.DestructiveTextureUtilities
             foreach (var compressKV in _compressDict)
             {
                 var sourceTex2D = compressKV.Key;
+                if (sourceTex2D == null) { continue; }
                 var path = AssetSaveHelper.SavePNG(_outputDirectory, sourceTex2D);
                 AssetDatabase.ImportAsset(path);
                 var importer = TextureImporter.GetAtPath(path) as TextureImporter;
