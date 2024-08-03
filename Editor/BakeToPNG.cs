@@ -55,6 +55,7 @@ namespace net.rs64.DestructiveTextureUtilities
             var mats = RendererUtility.GetFilteredMaterials(renderers);
             var newMatPair = MaterialUtility.ReplaceTextureAll(mats, texDict);
             foreach (var r in renderers) { r.sharedMaterials = r.sharedMaterials.Select(m => m == null ? m : (newMatPair.TryGetValue(m, out var nm) ? nm : m)).ToArray(); }
+            foreach (var mat in newMatPair.Values) { assetSaver.TransferAsset(mat); }
             AssetDatabase.Refresh();
         }
 
