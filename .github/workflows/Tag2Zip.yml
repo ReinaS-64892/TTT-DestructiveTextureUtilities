@@ -27,6 +27,7 @@ jobs:
           rm -r ./.git
           rm -r ./.github
           rm -r ./DependentUtil
+          rm -r ./DependentUtil.meta
 
       - name: CreateZip
         run: |
