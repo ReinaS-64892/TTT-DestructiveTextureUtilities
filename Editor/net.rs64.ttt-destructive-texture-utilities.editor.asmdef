@@ -14,7 +14,15 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": [],
-    "versionDefines": [],
+    "defineConstraints": [
+        "TTT"
+    ],
+    "versionDefines": [
+        {
+            "name": "net.rs64.tex-trans-tool",
+            "expression": "[0.8.0-rc.10]",
+            "define": "TTT"
+        }
+    ],
     "noEngineReferences": false
 }
