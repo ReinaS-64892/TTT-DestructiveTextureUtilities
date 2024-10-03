@@ -1,15 +1,15 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEditor;
-using net.rs64.TexTransCore;
-using net.rs64.TexTransCore.Utils;
-using net.rs64.TexTransCore.Island;
+using net.rs64.TexTransUnityCore;
+using net.rs64.TexTransUnityCore.Utils;
+using net.rs64.TexTransUnityCore.Island;
 using net.rs64.TexTransTool.Utils;
 using System.IO;
 using UnityEngine.UIElements;
 using System;
 using net.rs64.TexTransTool.IslandSelector;
-using net.rs64.TexTransCore.Decal;
+using net.rs64.TexTransUnityCore.Decal;
 using Unity.Collections;
 
 namespace net.rs64.DestructiveTextureUtilities

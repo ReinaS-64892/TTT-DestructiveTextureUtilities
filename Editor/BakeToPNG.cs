@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using net.rs64.TexTransCore.Utils;
+using net.rs64.TexTransUnityCore.Utils;
 using net.rs64.TexTransTool;
 using net.rs64.TexTransTool.Build;
 using net.rs64.TexTransTool.TextureAtlas.FineTuning;
