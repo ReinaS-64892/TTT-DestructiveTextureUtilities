@@ -15,6 +15,7 @@ namespace net.rs64.DestructiveTextureUtilities
     internal class BakeToPNG : DestructiveUtility
     {
         public GameObject DomainRoot;
+        public bool InPlaceMode;
         public override void CreateUtilityPanel(VisualElement rootElement)
         {
             var serializedObject = new SerializedObject(this);
@@ -23,6 +24,7 @@ namespace net.rs64.DestructiveTextureUtilities
             rootElement.hierarchy.Add(new Label("DomainRoot にベイクしたい対象を割り当ててください。"));
 
             rootElement.hierarchy.Add(CreateVIProperyFiled(serializedObject.FindProperty(nameof(DomainRoot))));
+            rootElement.hierarchy.Add(CreateVIProperyFiled(serializedObject.FindProperty(nameof(InPlaceMode))));
 
             var button = new Button(Execute);
             button.text = "Execute";
@@ -32,26 +34,33 @@ namespace net.rs64.DestructiveTextureUtilities
         void Execute()
         {
             if (DomainRoot == null) { EditorUtility.DisplayDialog("BakeToPNG - 実行不可能", "DomainRoot が存在しません！", "Ok"); return; }
-
+            if (InPlaceMode && EditorUtility.DisplayDialog("In-Place Mode is Enable!!!", "インプレースモードが有効です！ 後戻りできない可能性のある操作です！\n\n本当に実行しますか？", "Yes", "No") is false) { return; }
             var outputDirectory = AssetSaveHelper.CreateUniqueNewFolder(DomainRoot.name + "-BakeToPNGResult");
-            var duplicate = Instantiate(DomainRoot);
-            duplicate.transform.position = new Vector3(duplicate.transform.position.x, duplicate.transform.position.y, duplicate.transform.position.z + 2);
 
-            var phaseDict = AvatarBuildUtils.FindAtPhase(duplicate);
+            GameObject target;
+            if (InPlaceMode is false)
+            {
+                target = Instantiate(DomainRoot);
+                target.transform.position = new Vector3(target.transform.position.x, target.transform.position.y, target.transform.position.z + 2);
+            }
+            else { target = DomainRoot; }
+
+
+            var phaseDict = AvatarBuildUtils.FindAtPhase(target);
             var assetSaver = new AssetSaver(AssetDatabase.GenerateUniqueAssetPath(Path.Combine(outputDirectory, "OtherAssetsContainer.asset")));
 
             var deferredDestroyer = new DeferredDestroyer();
             var compressionManager = new ToPNGCompress(outputDirectory);
             var textureManager = new TextureManager(deferredDestroyer, new GetOriginTexture(false, deferredDestroyer.DeferredDestroyOf), compressionManager);
 
-            var domain = new AvatarDomain(duplicate, false, textureManager, assetSaver);
+            var domain = new AvatarDomain(target, false, textureManager, assetSaver);
             var session = new TexTransBuildSession(domain, phaseDict);
 
             AvatarBuildUtils.ExecuteAllPhase(session);
-            AvatarBuildUtils.DestroyITexTransToolTags(duplicate);
+            AvatarBuildUtils.DestroyITexTransToolTags(target);
             var texDict = compressionManager.CreateCompresses();
 
-            var renderers = duplicate.GetComponentsInChildren<Renderer>(true);
+            var renderers = target.GetComponentsInChildren<Renderer>(true);
             var mats = RendererUtility.GetFilteredMaterials(renderers);
             var newMatPair = MaterialUtility.ReplaceTextureAll(mats, texDict);
             foreach (var r in renderers) { r.sharedMaterials = r.sharedMaterials.Select(m => m == null ? m : (newMatPair.TryGetValue(m, out var nm) ? nm : m)).ToArray(); }
