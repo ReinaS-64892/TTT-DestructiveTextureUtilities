@@ -9,9 +9,9 @@
   },
   "url": "https://github.com/ReinaS-64892/TTT-DestructiveTextureUtilities",
   "dependencies": {
-    "net.rs64.tex-trans-tool": "0.8.0-rc.10"
+    "net.rs64.tex-trans-tool": "0.8.1"
   },
   "vpmDependencies": {
-    "net.rs64.tex-trans-tool": "0.8.0-rc.10"
+    "net.rs64.tex-trans-tool": "0.8.1"
   }
 }
