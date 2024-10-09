@@ -42,7 +42,7 @@ namespace net.rs64.DestructiveTextureUtilities
             }
             foreach (var i in FindIndexAll(duAsmdef, str => str.Contains("\"expression\":")))
             {
-                duAsmdef[i] = duAsmdef[i].Replace(GetString(du[i]), $"[{tttVersion}]");
+                duAsmdef[i] = duAsmdef[i].Replace(GetString(duAsmdef[i]), $"[{tttVersion}]");
             }
             File.WriteAllText(TTT_DTU_PACKAGE_DOT_JSON_PATH, string.Join("\n", du));
             File.WriteAllText(TTT_DTU_ASMDEF, string.Join("\n", duAsmdef));
