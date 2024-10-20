@@ -1,13 +1,10 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+Semantic Versioning に近い雰囲気バージョニングです！
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## [Unreleased](https://github.com/ReinaS-64892/TTT-DestructiveTextureUtilities/compare/v0.1.0...main)
 
-## [Unreleased](https://github.com/ReinaS-64892/TexTransTool/compare/v0.1.0...HEAD)
-
-## [v0.1.0](https://github.com/ReinaS-64892/TexTransTool/compare/v0.7.7...v0.1.0) - 2024-10-09
+## [v0.1.0](https://github.com/ReinaS-64892/TTT-DestructiveTextureUtilities/commit/2f31b28b5dfd89c8f8cce3a4d61554baa473a79c) 2024-10-09
 
 ### Added
 
