@@ -39,7 +39,7 @@ namespace net.rs64.DestructiveTextureUtilities
             domain.SaveTextureDirectory = AssetSaveHelper.CreateUniqueNewFolder(DomainRoot.name + "-StackExtractResult");
             var session = new StackTracedSession(domain, phaseDict);
 
-            AvatarBuildUtils.ExecuteAllPhase(session);
+            AvatarBuildUtils.ExecuteAllPhaseAndEnd(session);
             DestroyImmediate(duplicate);
 
             AssetDatabase.Refresh();
@@ -82,15 +82,15 @@ namespace net.rs64.DestructiveTextureUtilities
 
     internal class StackTracedSession : TexTransBuildSession
     {
-        public StackTracedSession(RenderersDomain renderersDomain, Dictionary<TexTransPhase, List<TexTransBehavior>> phaseAtList) : base(renderersDomain, phaseAtList)
+        public StackTracedSession(RenderersDomain renderersDomain, List<Domain2Behavior> phaseAtList) : base(renderersDomain, phaseAtList)
         {
         }
 
-        protected override void ApplyImpl(TexTransBehavior tf)
+        protected override void ApplyImpl(TexTransBehavior tf, IDomain domain)
         {
             var stackExtractedDomain = _domain as StackExtractedDomain;
             stackExtractedDomain.SaveTextureName = tf.gameObject.name;
-            base.ApplyImpl(tf);
+            base.ApplyImpl(tf, domain);
         }
     }
 }

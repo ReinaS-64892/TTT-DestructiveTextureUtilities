@@ -56,7 +56,7 @@ namespace net.rs64.DestructiveTextureUtilities
             var domain = new AvatarDomain(target, false, textureManager, assetSaver);
             var session = new TexTransBuildSession(domain, phaseDict);
 
-            AvatarBuildUtils.ExecuteAllPhase(session);
+            AvatarBuildUtils.ExecuteAllPhaseAndEnd(session);
             AvatarBuildUtils.DestroyITexTransToolTags(target);
             var texDict = compressionManager.CreateCompresses();
 
