@@ -1,9 +1,8 @@
 using UnityEditor;
 using System.IO;
-using System;
 using UnityEngine;
 
-namespace net.rs64.DestructiveTextureUtilities
+namespace net.rs64.TexTransTool.DestructiveTextureUtilities
 {
     internal static class AssetSaveHelper
     {

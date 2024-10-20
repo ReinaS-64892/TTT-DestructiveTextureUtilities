@@ -5,14 +5,13 @@ using net.rs64.TexTransCoreEngineForUnity;
 using net.rs64.TexTransCoreEngineForUnity.Utils;
 using net.rs64.TexTransCoreEngineForUnity.Island;
 using net.rs64.TexTransTool.Utils;
-using System.IO;
 using UnityEngine.UIElements;
 using System;
 using net.rs64.TexTransTool.IslandSelector;
 using net.rs64.TexTransCoreEngineForUnity.Decal;
 using Unity.Collections;
 
-namespace net.rs64.DestructiveTextureUtilities
+namespace net.rs64.TexTransTool.DestructiveTextureUtilities
 {
     internal class SeparatorForIsland : DestructiveUtility
     {

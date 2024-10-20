@@ -1,16 +1,14 @@
-
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using net.rs64.TexTransCoreEngineForUnity.Utils;
-using net.rs64.TexTransTool;
 using net.rs64.TexTransTool.Build;
 using net.rs64.TexTransTool.TextureAtlas.FineTuning;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace net.rs64.DestructiveTextureUtilities
+namespace net.rs64.TexTransTool.DestructiveTextureUtilities
 {
     internal class BakeToPNG : DestructiveUtility
     {

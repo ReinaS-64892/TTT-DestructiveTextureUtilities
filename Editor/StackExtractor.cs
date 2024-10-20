@@ -4,11 +4,10 @@ using UnityEditor;
 using net.rs64.TexTransCoreEngineForUnity.Utils;
 using System.IO;
 using UnityEngine.UIElements;
-using net.rs64.TexTransTool;
 using System.Linq;
 using net.rs64.TexTransTool.Build;
 
-namespace net.rs64.DestructiveTextureUtilities
+namespace net.rs64.TexTransTool.DestructiveTextureUtilities
 {
     internal class StackExtractor : DestructiveUtility
     {

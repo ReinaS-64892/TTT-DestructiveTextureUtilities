@@ -1,11 +1,10 @@
-using System;
 using System.IO;
 using net.rs64.TexTransTool.MultiLayerImage;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace net.rs64.DestructiveTextureUtilities
+namespace net.rs64.TexTransTool.DestructiveTextureUtilities
 {
     internal class ImportedImageExtractor : DestructiveUtility
     {

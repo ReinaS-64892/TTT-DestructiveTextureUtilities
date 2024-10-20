@@ -6,7 +6,7 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEditor.UIElements;
 
-namespace net.rs64.DestructiveTextureUtilities
+namespace net.rs64.TexTransTool.DestructiveTextureUtilities
 {
     internal class MainMenu : EditorWindow
     {

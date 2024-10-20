@@ -2,13 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
-using Newtonsoft.Json;
 using UnityEditor;
-using UnityEngine;
-using UnityEngine.UIElements;
 
-namespace net.rs64.DestructiveTextureUtilities
+namespace net.rs64.TexTransTool.DestructiveTextureUtilities
 {
     static class UpdateDependentUtil
     {

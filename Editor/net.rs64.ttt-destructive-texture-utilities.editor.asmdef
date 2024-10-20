@@ -1,5 +1,5 @@
 {
-    "name": "net.rs64.ttt-destructive-texture-utilities.editor",
+    "name": "net.rs64.ttt-destructive-texture-utilities",
     "rootNamespace": "",
     "references": [
         "net.rs64.tt-unity-core",
