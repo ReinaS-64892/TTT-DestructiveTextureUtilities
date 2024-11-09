@@ -6,6 +6,8 @@ using System.IO;
 using UnityEngine.UIElements;
 using System.Linq;
 using net.rs64.TexTransTool.Build;
+using net.rs64.TexTransCore;
+using net.rs64.TexTransCoreEngineForUnity;
 
 namespace net.rs64.TexTransTool.DestructiveTextureUtilities
 {
@@ -58,11 +60,11 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
         public StackExtractedDomain(List<Renderer> renderers, bool previewing, IAssetSaver assetSaver, bool? useCompress = null) : base(renderers, previewing, assetSaver, useCompress) { }
         public StackExtractedDomain(List<Renderer> previewRenderers, bool previewing, ITextureManager textureManager, IAssetSaver assetSaver) : base(previewRenderers, previewing, textureManager, assetSaver) { }
 
-        public override void AddTextureStack<BlendTex>(Texture dist, BlendTex setTex)
+        public override void AddTextureStack(Texture dist, ITTRenderTexture addTex, ITTBlendKey blendKey)
         {
             if (!StackTrace.ContainsKey(dist)) { StackTrace.Add(dist, new()); }
-            var tmpStack = RenderTexture.GetTemporary(setTex.Texture.width, setTex.Texture.height, 0, RenderTextureFormat.ARGB32);
-            Graphics.Blit(setTex.Texture, tmpStack);
+            var tmpStack = RenderTexture.GetTemporary(addTex.Width, addTex.Hight, 0, RenderTextureFormat.ARGB32);
+            Graphics.Blit(addTex.Unwrap(), tmpStack);
 
             var tex = tmpStack.CopyTexture2D();
             tex.name = $"{StackTrace[dist].Count}-{SaveTextureName}";
@@ -74,7 +76,7 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
 
 
 
-            base.AddTextureStack(dist, setTex);
+            base.AddTextureStack(dist, addTex, blendKey);
         }
 
     }
