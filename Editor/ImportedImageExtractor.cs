@@ -27,18 +27,16 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
             if (TTTImportedImage == null) { EditorUtility.DisplayDialog("ImportedImageExtractor - 実行不可能", "TTTImportedImage が存在しません！", "Ok"); return; }
 
             var canvasData = TTTImportedImage.CanvasDescription.LoadCanvasSource(AssetDatabase.GetAssetPath(TTTImportedImage.CanvasDescription));
-            var gorigin = new GetOriginTexture(false, t => { }, null);
-            var ttce = new TTCE4UnityWithTTT4Unity(false, gorigin);
-            gorigin._ttt4u = ttce;
-            var ttrt = ttce.CreateRenderTexture(TTTImportedImage.CanvasDescription.Width, TTTImportedImage.CanvasDescription.Height);
+            var diskLoader = new UnityDiskUtil(new TextureManager(false));
+            var ttce = new TTCE4UnityWithTTT4Unity(diskLoader);
 
-            TTTImportedImage.LoadImage(canvasData, ttce, ttrt);
+            using var rt = ttce.CreateRenderTexture(TTTImportedImage.CanvasDescription.Width, TTTImportedImage.CanvasDescription.Height);
+            TTTImportedImage.LoadImage(canvasData, ttce, rt);
 
-
-            var tex2D = ttrt.Unwrap().CopyTexture2D();
-            // tex2d.LoadRawTextureData(imageData.GetResult);
+            var tex2D = rt.Unwrap().CopyTexture2D();
             tex2D.name = TTTImportedImage.name + "-Extracted";
             AssetSaveHelper.SavePNG(tex2D);
+            UnityEngine.Object.DestroyImmediate(tex2D);
         }
     }
 }
