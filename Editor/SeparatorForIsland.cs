@@ -86,7 +86,7 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
                         {
                             var writeSpan = triNa.AsSpan();
                             for (var i = 0; writeSpan.Length > i; i += 1) { writeSpan[i] = islands[islandIndex].triangles[i]; }
-                            TransTexture.ForTrans(targetRt, fullTexture2D, new TransTexture.TransData<Vector2>(triNa, meshData.VertexUV, meshData.VertexUV), Padding, null, true);
+                            TransTexture.ForTrans(targetRt, fullTexture2D, new TransTexture.TransData(triNa, meshData.VertexUV, meshData.VertexUV), Padding, null, true);
                         }
                         var tex = targetRt.CopyTexture2D();
                         RenderTexture.ReleaseTemporary(targetRt);
