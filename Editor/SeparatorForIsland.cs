@@ -2,14 +2,14 @@
 using UnityEngine;
 using UnityEditor;
 using net.rs64.TexTransCoreEngineForUnity;
-using net.rs64.TexTransCoreEngineForUnity.Utils;
-using net.rs64.TexTransCoreEngineForUnity.Island;
 using net.rs64.TexTransTool.Utils;
 using UnityEngine.UIElements;
 using System;
 using net.rs64.TexTransTool.IslandSelector;
-using net.rs64.TexTransCoreEngineForUnity.Decal;
 using Unity.Collections;
+using net.rs64.TexTransTool.Decal;
+using net.rs64.TexTransCore;
+using net.rs64.TexTransTool.UVIsland;
 
 namespace net.rs64.TexTransTool.DestructiveTextureUtilities
 {
@@ -92,7 +92,7 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
                         RenderTexture.ReleaseTemporary(targetRt);
 
                         tex.name = $"{subMeshI}-{islandIndex}";
-                        AssetSaveHelper.SavePNG(outputDirectory,tex);
+                        AssetSaveHelper.SavePNG(outputDirectory, tex);
                         UnityEngine.Object.DestroyImmediate(tex);
                     }
 

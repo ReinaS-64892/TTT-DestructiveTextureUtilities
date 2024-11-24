@@ -1,9 +1,7 @@
-using System.IO;
 using net.rs64.TexTransCoreEngineForUnity;
-using net.rs64.TexTransCoreEngineForUnity.Utils;
 using net.rs64.TexTransTool.MultiLayerImage;
+using net.rs64.TexTransTool.Utils;
 using UnityEditor;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace net.rs64.TexTransTool.DestructiveTextureUtilities

@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using net.rs64.TexTransCoreEngineForUnity.Utils;
 using System.IO;
 using UnityEngine.UIElements;
 using System.Linq;
 using net.rs64.TexTransTool.Build;
 using net.rs64.TexTransCore;
 using net.rs64.TexTransCoreEngineForUnity;
+using net.rs64.TexTransTool.Utils;
 
 namespace net.rs64.TexTransTool.DestructiveTextureUtilities
 {
