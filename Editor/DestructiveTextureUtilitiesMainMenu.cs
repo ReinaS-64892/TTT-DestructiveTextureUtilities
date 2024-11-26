@@ -28,7 +28,7 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
 
             var utilities = AppDomain.CurrentDomain
                 .GetAssemblies()
-                .First(asm => asm.GetName().Name == "net.rs64.ttt-destructive-texture-utilities.editor")
+                .First(asm => asm.GetName().Name == "net.rs64.ttt-destructive-texture-utilities")
                 .GetTypes()
                 .Where(i => !i.IsAbstract)
                 .Where(i => typeof(DestructiveUtility).IsAssignableFrom(i));

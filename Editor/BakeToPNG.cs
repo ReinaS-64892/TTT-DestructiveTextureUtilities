@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using net.rs64.TexTransCoreEngineForUnity.Utils;
 using net.rs64.TexTransTool.Build;
 using net.rs64.TexTransTool.TextureAtlas.FineTuning;
+using net.rs64.TexTransTool.Utils;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -76,7 +76,7 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
         {
             _outputDirectory = outputDirectory;
         }
-        public override void CompressDeferred() { }
+        public override void CompressDeferred(IEnumerable<Renderer> renderers, OriginEqual originEqual) { }
         public Dictionary<Texture2D, Texture2D> CreateCompresses()
         {
             var swapTexture2D = new Dictionary<Texture2D, Texture2D>();
