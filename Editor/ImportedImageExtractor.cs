@@ -26,7 +26,7 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
 
             var canvasData = TTTImportedImage.CanvasDescription.LoadCanvasSource(AssetDatabase.GetAssetPath(TTTImportedImage.CanvasDescription));
             var diskLoader = new UnityDiskUtil(new TextureManager(false));
-            var ttce = new TTCE4UnityWithTTT4Unity(diskLoader);
+            var ttce = new TTCEUnityWithTTT4Unity(diskLoader);
 
             using var rt = ttce.CreateRenderTexture(TTTImportedImage.CanvasDescription.Width, TTTImportedImage.CanvasDescription.Height);
             TTTImportedImage.LoadImage(canvasData, ttce, rt);
