@@ -9,7 +9,7 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
     static class UpdateDependentUtil
     {
         const string TTT_DTU_PACKAGE_DOT_JSON_PATH = "Packages/TTT-DestructiveTextureUtilities/package.json";
-        const string TTT_DTU_ASMDEF = "Packages/TTT-DestructiveTextureUtilities/Editor/net.rs64.ttt-destructive-texture-utilities.editor.asmdef";
+        const string TTT_DTU_ASMDEF = "Packages/TTT-DestructiveTextureUtilities/Editor/net.rs64.ttt-destructive-texture-utilities.asmdef";
         const string TEX_TRANS_TOOL_PACKAGE_DOT_JSON_PATH = "Packages/TexTransTool/package.json";
 
         [InitializeOnLoadMethod]
