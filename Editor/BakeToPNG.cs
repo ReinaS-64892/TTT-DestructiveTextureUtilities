@@ -78,7 +78,7 @@ namespace net.rs64.DestructiveTextureUtilities
         {
             _outputDirectory = outputDirectory;
         }
-        public override void CompressDeferred() { }
+        public override void CompressDeferred(IEnumerable<Renderer> renderers, OriginEqual originEqual) { }
         public Dictionary<Texture2D, Texture2D> CreateCompresses()
         {
             var swapTexture2D = new Dictionary<Texture2D, Texture2D>();

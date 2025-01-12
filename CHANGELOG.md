@@ -4,6 +4,10 @@ Semantic Versioning に近い雰囲気バージョニングです！
 
 ## [Unreleased](https://github.com/ReinaS-64892/TTT-DestructiveTextureUtilities/compare/v0.1.1...HEAD)
 
+### DependencyUpdate
+
+- 依存バージョンが TexTransTool v0.8.13 にアップデートされました。(#8)
+
 ## [v0.1.1](https://github.com/ReinaS-64892/TTT-DestructiveTextureUtilities/compare/v0.1.0...v0.1.1) - 2024-10-30
 
 ### DependencyUpdate
