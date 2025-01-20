@@ -52,7 +52,7 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
             var textureManager = new TextureManager(deferredDestroyer, new GetOriginTexture(false, deferredDestroyer.DeferredDestroyOf), compressionManager);
 
             var domain = new AvatarDomain(target, false, textureManager, assetSaver);
-            var session = new TexTransBuildSession(domain, phaseDict);
+            var session = new TexTransBuildSession(target, domain, phaseDict);
 
             AvatarBuildUtils.ExecuteAllPhaseAndEnd(session);
             AvatarBuildUtils.DestroyITexTransToolTags(target);

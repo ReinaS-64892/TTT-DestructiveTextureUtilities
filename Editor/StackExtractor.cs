@@ -38,7 +38,7 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
             var phaseDict = AvatarBuildUtils.FindAtPhase(duplicate);
             var domain = new StackExtractedDomain(renderers, false, false, false);
             domain.SaveTextureDirectory = AssetSaveHelper.CreateUniqueNewFolder(DomainRoot.name + "-StackExtractResult");
-            var session = new StackTracedSession(domain, phaseDict);
+            var session = new StackTracedSession(duplicate, domain, phaseDict);
 
             AvatarBuildUtils.ExecuteAllPhaseAndEnd(session);
             DestroyImmediate(duplicate);
@@ -83,7 +83,7 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
 
     internal class StackTracedSession : TexTransBuildSession
     {
-        public StackTracedSession(RenderersDomain renderersDomain, List<Domain2Behavior> phaseAtList) : base(renderersDomain, phaseAtList)
+        public StackTracedSession(GameObject domainRoot, RenderersDomain renderersDomain, Dictionary<TexTransPhase, List<TexTransBehavior>> phaseAtList) : base(domainRoot, renderersDomain, phaseAtList)
         {
         }
 
