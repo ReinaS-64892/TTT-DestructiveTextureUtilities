@@ -1,16 +1,14 @@
-
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using net.rs64.TexTransCore.Utils;
-using net.rs64.TexTransTool;
 using net.rs64.TexTransTool.Build;
 using net.rs64.TexTransTool.TextureAtlas.FineTuning;
+using net.rs64.TexTransTool.Utils;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace net.rs64.DestructiveTextureUtilities
+namespace net.rs64.TexTransTool.DestructiveTextureUtilities
 {
     internal class BakeToPNG : DestructiveUtility
     {
@@ -54,9 +52,9 @@ namespace net.rs64.DestructiveTextureUtilities
             var textureManager = new TextureManager(deferredDestroyer, new GetOriginTexture(false, deferredDestroyer.DeferredDestroyOf), compressionManager);
 
             var domain = new AvatarDomain(target, false, textureManager, assetSaver);
-            var session = new TexTransBuildSession(domain, phaseDict);
+            var session = new TexTransBuildSession(target, domain, phaseDict);
 
-            AvatarBuildUtils.ExecuteAllPhase(session);
+            AvatarBuildUtils.ExecuteAllPhaseAndEnd(session);
             AvatarBuildUtils.DestroyITexTransToolTags(target);
             var texDict = compressionManager.CreateCompresses();
 

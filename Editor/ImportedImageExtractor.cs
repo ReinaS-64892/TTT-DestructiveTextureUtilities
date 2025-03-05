@@ -1,11 +1,11 @@
 using System;
-using System.IO;
+using net.rs64.TexTransCoreEngineForUnity;
 using net.rs64.TexTransTool.MultiLayerImage;
+using net.rs64.TexTransTool.Utils;
 using UnityEditor;
-using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace net.rs64.DestructiveTextureUtilities
+namespace net.rs64.TexTransTool.DestructiveTextureUtilities
 {
     internal class ImportedImageExtractor : DestructiveUtility
     {
@@ -25,16 +25,17 @@ namespace net.rs64.DestructiveTextureUtilities
         {
             if (TTTImportedImage == null) { EditorUtility.DisplayDialog("ImportedImageExtractor - 実行不可能", "TTTImportedImage が存在しません！", "Ok"); return; }
 
-            var canvasBytes = File.ReadAllBytes(AssetDatabase.GetAssetPath(TTTImportedImage.CanvasDescription));
-            var imageData = TTTImportedImage.LoadImage(canvasBytes);
+            var canvasData = TTTImportedImage.CanvasDescription.LoadCanvasSource(AssetDatabase.GetAssetPath(TTTImportedImage.CanvasDescription));
+            var diskLoader = new UnityDiskUtil(new TextureManager(false));
+            var ttce = new TTCEUnityWithTTT4Unity(diskLoader);
 
-            var tex2d = new Texture2D(TTTImportedImage.CanvasDescription.Width, TTTImportedImage.CanvasDescription.Height, TextureFormat.RGBA32, false);
+            using var rt = ttce.CreateRenderTexture(TTTImportedImage.CanvasDescription.Width, TTTImportedImage.CanvasDescription.Height);
+            TTTImportedImage.LoadImage(canvasData, ttce, rt);
 
-            tex2d.LoadRawTextureData(imageData.GetResult);
-            tex2d.name = TTTImportedImage.name + "-Extracted";
-            AssetSaveHelper.SavePNG(tex2d);
-
-            imageData.GetResult.Dispose();
+            var tex2D = ttce.DownloadToTexture2D(rt, false);
+            tex2D.name = TTTImportedImage.name + "-Extracted";
+            AssetSaveHelper.SavePNG(tex2D);
+            UnityEngine.Object.DestroyImmediate(tex2D);
         }
     }
 }

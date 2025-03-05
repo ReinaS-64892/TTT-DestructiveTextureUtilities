@@ -1,18 +1,17 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEditor;
-using net.rs64.TexTransCore;
-using net.rs64.TexTransCore.Utils;
-using net.rs64.TexTransCore.Island;
+using net.rs64.TexTransCoreEngineForUnity;
 using net.rs64.TexTransTool.Utils;
-using System.IO;
 using UnityEngine.UIElements;
 using System;
 using net.rs64.TexTransTool.IslandSelector;
-using net.rs64.TexTransCore.Decal;
 using Unity.Collections;
+using net.rs64.TexTransTool.Decal;
+using net.rs64.TexTransCore;
+using net.rs64.TexTransTool.UVIsland;
 
-namespace net.rs64.DestructiveTextureUtilities
+namespace net.rs64.TexTransTool.DestructiveTextureUtilities
 {
     internal class SeparatorForIsland : DestructiveUtility
     {
@@ -54,10 +53,10 @@ namespace net.rs64.DestructiveTextureUtilities
                 var meshData = new MeshData(SeparateTarget);
                 var outputDirectory = AssetSaveHelper.CreateUniqueNewFolder(SeparateTarget.name + "-IslandSeparateResult");
 
-                for (var subMeshI = 0; meshData.Triangles.Length > subMeshI; subMeshI += 1)
+                for (var subMeshI = 0; meshData.TriangleIndex.Length > subMeshI; subMeshI += 1)
                 {
-                    EditorUtility.DisplayProgressBar("SeparatorForIsland", "SubMesh-" + subMeshI, subMeshI / (float)meshData.Triangles.Length);
-                    var progressStartAndEnd = (subMeshI / (float)meshData.Triangles.Length, (subMeshI + 1) / (float)meshData.Triangles.Length);
+                    EditorUtility.DisplayProgressBar("SeparatorForIsland", "SubMesh-" + subMeshI, subMeshI / (float)meshData.TriangleIndex.Length);
+                    var progressStartAndEnd = (subMeshI / (float)meshData.TriangleIndex.Length, (subMeshI + 1) / (float)meshData.TriangleIndex.Length);
                     if (SeparateTarget.sharedMaterials.Length <= subMeshI) { continue; }
                     var material = SeparateTarget.sharedMaterials[subMeshI];
                     var texture2D = material.GetTexture(TargetPropertyName) as Texture2D;
@@ -71,7 +70,7 @@ namespace net.rs64.DestructiveTextureUtilities
                     {
                         var islandDescriptions = new IslandDescription[islands.Length];
                         Array.Fill(islandDescriptions, new IslandDescription(meshData.Vertices, meshData.VertexUV, SeparateTarget, subMeshI));
-                        selectBitArray = IslandSelector.IslandSelect(islands, islandDescriptions);
+                        selectBitArray = IslandSelector.IslandSelect(new(islands, islandDescriptions, DomainUtility.ObjectEqual));
                     }
                     else { selectBitArray = new(islands.Length, true); }
 
@@ -87,13 +86,13 @@ namespace net.rs64.DestructiveTextureUtilities
                         {
                             var writeSpan = triNa.AsSpan();
                             for (var i = 0; writeSpan.Length > i; i += 1) { writeSpan[i] = islands[islandIndex].triangles[i]; }
-                            TransTexture.ForTrans(targetRt, fullTexture2D, new TransTexture.TransData<Vector2>(triNa, meshData.VertexUV, meshData.VertexUV), Padding, null, true);
+                            TransTexture.ForTrans(targetRt, fullTexture2D, new TransTexture.TransData(triNa, meshData.VertexUV, meshData.VertexUV), Padding, null, true);
                         }
                         var tex = targetRt.CopyTexture2D();
                         RenderTexture.ReleaseTemporary(targetRt);
 
                         tex.name = $"{subMeshI}-{islandIndex}";
-                        AssetSaveHelper.SavePNG(outputDirectory,tex);
+                        AssetSaveHelper.SavePNG(outputDirectory, tex);
                         UnityEngine.Object.DestroyImmediate(tex);
                     }
 

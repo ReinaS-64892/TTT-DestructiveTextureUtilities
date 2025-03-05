@@ -1,14 +1,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using net.rs64.TexTransCore.Utils;
 using System.IO;
 using UnityEngine.UIElements;
-using net.rs64.TexTransTool;
 using System.Linq;
 using net.rs64.TexTransTool.Build;
+using net.rs64.TexTransCore;
+using net.rs64.TexTransCoreEngineForUnity;
+using net.rs64.TexTransTool.Utils;
 
-namespace net.rs64.DestructiveTextureUtilities
+namespace net.rs64.TexTransTool.DestructiveTextureUtilities
 {
     internal class StackExtractor : DestructiveUtility
     {
@@ -37,9 +38,9 @@ namespace net.rs64.DestructiveTextureUtilities
             var phaseDict = AvatarBuildUtils.FindAtPhase(duplicate);
             var domain = new StackExtractedDomain(renderers, false, false, false);
             domain.SaveTextureDirectory = AssetSaveHelper.CreateUniqueNewFolder(DomainRoot.name + "-StackExtractResult");
-            var session = new StackTracedSession(domain, phaseDict);
+            var session = new StackTracedSession(duplicate, domain, phaseDict);
 
-            AvatarBuildUtils.ExecuteAllPhase(session);
+            AvatarBuildUtils.ExecuteAllPhaseAndEnd(session);
             DestroyImmediate(duplicate);
 
             AssetDatabase.Refresh();
@@ -59,38 +60,37 @@ namespace net.rs64.DestructiveTextureUtilities
         public StackExtractedDomain(List<Renderer> renderers, bool previewing, IAssetSaver assetSaver, bool? useCompress = null) : base(renderers, previewing, assetSaver, useCompress) { }
         public StackExtractedDomain(List<Renderer> previewRenderers, bool previewing, ITextureManager textureManager, IAssetSaver assetSaver) : base(previewRenderers, previewing, textureManager, assetSaver) { }
 
-        public override void AddTextureStack<BlendTex>(Texture dist, BlendTex setTex)
+        public override void AddTextureStack(Texture dist, ITTRenderTexture addTex, ITTBlendKey blendKey)
         {
             if (!StackTrace.ContainsKey(dist)) { StackTrace.Add(dist, new()); }
-            var tmpStack = RenderTexture.GetTemporary(setTex.Texture.width, setTex.Texture.height, 0, RenderTextureFormat.ARGB32);
-            Graphics.Blit(setTex.Texture, tmpStack);
 
-            var tex = tmpStack.CopyTexture2D();
-            tex.name = $"{StackTrace[dist].Count}-{SaveTextureName}";
-            var path = AssetSaveHelper.SavePNG(SaveTextureDirectory, tex);
-            StackTrace[dist].Add(path);
-
-            RenderTexture.ReleaseTemporary(tmpStack);
-            UnityEngine.Object.DestroyImmediate(tex);
-
-
-
-            base.AddTextureStack(dist, setTex);
+            var tex = _ttce4U.DownloadToTexture2D(addTex, false);
+            try
+            {
+                tex.name = $"{StackTrace[dist].Count}-{SaveTextureName}";
+                var path = AssetSaveHelper.SavePNG(SaveTextureDirectory, tex);
+                StackTrace[dist].Add(path);
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(tex);
+                base.AddTextureStack(dist, addTex, blendKey);
+            }
         }
 
     }
 
     internal class StackTracedSession : TexTransBuildSession
     {
-        public StackTracedSession(RenderersDomain renderersDomain, Dictionary<TexTransPhase, List<TexTransBehavior>> phaseAtList) : base(renderersDomain, phaseAtList)
+        public StackTracedSession(GameObject domainRoot, RenderersDomain renderersDomain, Dictionary<TexTransPhase, List<TexTransBehavior>> phaseAtList) : base(domainRoot, renderersDomain, phaseAtList)
         {
         }
 
-        protected override void ApplyImpl(TexTransBehavior tf)
+        protected override void ApplyImpl(TexTransBehavior tf, IDomain domain)
         {
             var stackExtractedDomain = _domain as StackExtractedDomain;
             stackExtractedDomain.SaveTextureName = tf.gameObject.name;
-            base.ApplyImpl(tf);
+            base.ApplyImpl(tf, domain);
         }
     }
 }
