@@ -1,3 +1,4 @@
+using System;
 using net.rs64.TexTransCoreEngineForUnity;
 using net.rs64.TexTransTool.MultiLayerImage;
 using net.rs64.TexTransTool.Utils;
@@ -31,7 +32,7 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
             using var rt = ttce.CreateRenderTexture(TTTImportedImage.CanvasDescription.Width, TTTImportedImage.CanvasDescription.Height);
             TTTImportedImage.LoadImage(canvasData, ttce, rt);
 
-            var tex2D = rt.Unwrap().CopyTexture2D();
+            var tex2D = ttce.DownloadToTexture2D(rt, false);
             tex2D.name = TTTImportedImage.name + "-Extracted";
             AssetSaveHelper.SavePNG(tex2D);
             UnityEngine.Object.DestroyImmediate(tex2D);

@@ -63,20 +63,19 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
         public override void AddTextureStack(Texture dist, ITTRenderTexture addTex, ITTBlendKey blendKey)
         {
             if (!StackTrace.ContainsKey(dist)) { StackTrace.Add(dist, new()); }
-            var tmpStack = RenderTexture.GetTemporary(addTex.Width, addTex.Hight, 0, RenderTextureFormat.ARGB32);
-            Graphics.Blit(addTex.Unwrap(), tmpStack);
 
-            var tex = tmpStack.CopyTexture2D();
-            tex.name = $"{StackTrace[dist].Count}-{SaveTextureName}";
-            var path = AssetSaveHelper.SavePNG(SaveTextureDirectory, tex);
-            StackTrace[dist].Add(path);
-
-            RenderTexture.ReleaseTemporary(tmpStack);
-            UnityEngine.Object.DestroyImmediate(tex);
-
-
-
-            base.AddTextureStack(dist, addTex, blendKey);
+            var tex = _ttce4U.DownloadToTexture2D(addTex, false);
+            try
+            {
+                tex.name = $"{StackTrace[dist].Count}-{SaveTextureName}";
+                var path = AssetSaveHelper.SavePNG(SaveTextureDirectory, tex);
+                StackTrace[dist].Add(path);
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(tex);
+                base.AddTextureStack(dist, addTex, blendKey);
+            }
         }
 
     }

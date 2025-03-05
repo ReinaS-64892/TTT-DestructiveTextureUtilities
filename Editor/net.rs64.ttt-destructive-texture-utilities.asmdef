@@ -21,7 +21,7 @@
     "versionDefines": [
         {
             "name": "net.rs64.tex-trans-tool",
-            "expression": "[0.9.0-beta.4]",
+            "expression": "[0.9.2]",
             "define": "TTT"
         }
     ],
