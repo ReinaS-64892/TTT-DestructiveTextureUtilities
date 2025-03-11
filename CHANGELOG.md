@@ -2,7 +2,9 @@
 
 Semantic Versioning に近い雰囲気バージョニングです！
 
-## [Unreleased](https://github.com/ReinaS-64892/TTT-DestructiveTextureUtilities/compare/v0.1.2...HEAD)
+## [Unreleased](https://github.com/ReinaS-64892/TTT-DestructiveTextureUtilities/compare/v0.1.3...HEAD)
+
+## [v0.1.3](https://github.com/ReinaS-64892/TTT-DestructiveTextureUtilities/compare/v0.1.2...v0.1.3) - 2025-03-11
 
 ### DependencyUpdate
 
