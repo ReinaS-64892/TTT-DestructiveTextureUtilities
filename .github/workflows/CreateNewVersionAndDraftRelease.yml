@@ -11,19 +11,19 @@ jobs:
   Call-Update-Tag:
     uses: ./.github/workflows/UpdateTTTDU.yml
     with:
-      tag: ${{ github.event.inputs.tag }}
+      tag: ${{ inputs.tag }}
 
   Call-Tag2Zip:
     needs: [Call-Update-Tag]
     uses: ./.github/workflows/Tag2Zip.yml
     with:
-      tag: ${{ github.event.inputs.tag }}
+      tag: ${{ inputs.tag }}
 
   Call-Release:
     needs: [Call-Tag2Zip]
     uses: ./.github/workflows/CreateRelease.yml
     with:
-      tag: ${{ github.event.inputs.tag }}
+      tag: ${{ inputs.tag }}
 
 
   SendVpmRS64Net:
