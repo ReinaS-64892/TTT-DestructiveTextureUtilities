@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-tags: true
-          ref: ${{ github.event.inputs.tag }}
+          ref: ${{ inputs.tag }}
 
       - name: RemoveDotgitAndDotgithub
         run: |
@@ -31,10 +31,10 @@ jobs:
 
       - name: CreateZip
         run: |
-          zip -r ttt-destructive-texture-utilities-${{ github.event.inputs.tag }}.zip ./*
+          zip -r ttt-destructive-texture-utilities-${{ inputs.tag }}.zip ./*
 
       - name: Upload-artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ttt-destructive-texture-utilities-${{ github.event.inputs.tag }}
-          path: ttt-destructive-texture-utilities-${{ github.event.inputs.tag }}.zip
+          name: ttt-destructive-texture-utilities-${{ inputs.tag }}
+          path: ttt-destructive-texture-utilities-${{ inputs.tag }}.zip

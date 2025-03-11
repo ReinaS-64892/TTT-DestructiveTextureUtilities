@@ -19,9 +19,21 @@ jobs:
     with:
       tag: ${{ github.event.inputs.tag }}
 
-  Call-ReleaseDraft:
+  Call-Release:
     needs: [Call-Tag2Zip]
-    uses: ./.github/workflows/CreateReleaseDraft.yml
+    uses: ./.github/workflows/CreateRelease.yml
     with:
       tag: ${{ github.event.inputs.tag }}
 
+
+  SendVpmRS64Net:
+    runs-on: ubuntu-latest
+    needs: [Call-Release]
+    steps:
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.VPM_REPO_TOKEN }}
+          repository: ReinaS-64892/vpm.rs64.net
+          event-type: add_new_version
+          client-payload: '{"repository": "TTT-DestructiveTextureUtilities", "tag": "${{ inputs.tag }}"}'
