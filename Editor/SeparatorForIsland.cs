@@ -70,7 +70,7 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
                     {
                         var islandDescriptions = new IslandDescription[islands.Length];
                         Array.Fill(islandDescriptions, new IslandDescription(meshData.Vertices, meshData.VertexUV, SeparateTarget, SeparateTarget.sharedMaterials, subMeshI));
-                        selectBitArray = IslandSelector.IslandSelect(new(islands, islandDescriptions, DomainUtility.ObjectEqual));
+                        selectBitArray = IslandSelector.IslandSelect(new(islands, islandDescriptions, new NotWorkDomain(Array.Empty<Renderer>(), null)));
                     }
                     else { selectBitArray = new(islands.Length, true); }
 

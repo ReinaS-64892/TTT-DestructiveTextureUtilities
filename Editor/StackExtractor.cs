@@ -35,7 +35,7 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
             var duplicate = Instantiate(DomainRoot);
 
             var renderers = duplicate.GetComponentsInChildren<Renderer>().ToList();
-            var phaseDict = AvatarBuildUtils.FindAtPhase(duplicate);
+            var phaseDict = TexTransBehaviorSearch.FindAtPhase(duplicate);
             using var tempAssetHolder = new TempAssetHolder();
             var domain = new StackExtractedDomain(renderers, tempAssetHolder);
             domain.SaveTextureDirectory = AssetSaveHelper.CreateUniqueNewFolder(DomainRoot.name + "-StackExtractResult");

@@ -44,7 +44,7 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
             else { target = DomainRoot; }
 
 
-            var phaseDict = AvatarBuildUtils.FindAtPhase(target);
+            var phaseDict = TexTransBehaviorSearch.FindAtPhase(target);
             var savePath = AssetDatabase.GenerateUniqueAssetPath(Path.Combine(outputDirectory, "OtherAssetsContainer.asset"));
             var assetSaver = new AssetSaver(savePath);
 
@@ -80,7 +80,7 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
         {
             var swapTexture2D = new Dictionary<Texture2D, Texture2D>();
 
-            foreach (var compressKV in _textureDescriptors)
+            foreach (var compressKV in _renderTextureDescriptorManager.DownloadedDescriptors)
             {
                 var sourceTex2D = compressKV.Key;
                 if (sourceTex2D == null) { continue; }
