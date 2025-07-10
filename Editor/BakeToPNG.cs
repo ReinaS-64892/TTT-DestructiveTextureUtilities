@@ -49,7 +49,7 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
             var assetSaver = new AssetSaver(savePath);
 
 
-            var domain = new HookedAvatarDomain(target, assetSaver, savePath);
+            var domain = new HookedAvatarDomain(target, assetSaver, outputDirectory);
             var session = new TexTransBuildSession(target, domain, phaseDict);
 
             AvatarBuildUtils.ExecuteAllPhaseAndEnd(session);
@@ -57,6 +57,8 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
 
             domain.CreatePNG();
             AssetDatabase.Refresh();
+            AssetDatabase.ImportAsset(savePath);
+            EditorGUIUtility.PingObject(AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(savePath));
         }
 
 
@@ -76,6 +78,7 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
             MergeStack();
             ReadBackToTexture2D();
         }
+        // TODO : もっといい場所にフックをかけるべきだ
         public void CreatePNG()
         {
             var swapTexture2D = new Dictionary<Texture2D, Texture2D>();
