@@ -57,6 +57,8 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
 
             domain.CreatePNG();
             AssetDatabase.Refresh();
+            AssetDatabase.ImportAsset(savePath);
+            EditorGUIUtility.PingObject(AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(savePath));
         }
 
 
