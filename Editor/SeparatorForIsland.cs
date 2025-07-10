@@ -63,14 +63,14 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
                     if (texture2D == null) { continue; }
                     var fullTexture2D = texture2D.TryGetUnCompress();
 
-                    var islands = IslandUtility.UVtoIsland(meshData.TriangleIndex[subMeshI].AsList(), meshData.VertexUV.AsList()).ToArray();
+                    var islands = UnityIslandUtility.UVtoIsland(meshData.TriangleIndex[subMeshI].AsSpan(), meshData.VertexUV.AsSpan()).ToArray();
 
                     BitArray selectBitArray;
                     if (IslandSelector != null)
                     {
                         var islandDescriptions = new IslandDescription[islands.Length];
-                        Array.Fill(islandDescriptions, new IslandDescription(meshData.Vertices, meshData.VertexUV, SeparateTarget, subMeshI));
-                        selectBitArray = IslandSelector.IslandSelect(new(islands, islandDescriptions, DomainUtility.ObjectEqual));
+                        Array.Fill(islandDescriptions, new IslandDescription(meshData.Vertices, meshData.VertexUV, SeparateTarget, SeparateTarget.sharedMaterials, subMeshI));
+                        selectBitArray = IslandSelector.IslandSelect(new(islands, islandDescriptions, new NotWorkDomain(Array.Empty<Renderer>(), null)));
                     }
                     else { selectBitArray = new(islands.Length, true); }
 
@@ -82,11 +82,11 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
                         var targetRt = RenderTexture.GetTemporary(fullTexture2D.width, fullTexture2D.height, 32);
                         targetRt.Clear();
 
-                        using (var triNa = new NativeArray<TriangleIndex>(islands[islandIndex].triangles.Count, Allocator.TempJob))
+                        using (var triNa = new NativeArray<TriangleIndex>(islands[islandIndex].Triangles.Count, Allocator.TempJob))
                         {
                             var writeSpan = triNa.AsSpan();
-                            for (var i = 0; writeSpan.Length > i; i += 1) { writeSpan[i] = islands[islandIndex].triangles[i]; }
-                            TransTexture.ForTrans(targetRt, fullTexture2D, new TransTexture.TransData(triNa, meshData.VertexUV, meshData.VertexUV), Padding, null, true);
+                            for (var i = 0; writeSpan.Length > i; i += 1) { writeSpan[i] = islands[islandIndex].Triangles[i]; }
+                            // TransTexture.ForTrans(targetRt, fullTexture2D, new TransTexture.TransData(triNa, meshData.VertexUV, meshData.VertexUV), Padding, null, true);
                         }
                         var tex = targetRt.CopyTexture2D();
                         RenderTexture.ReleaseTemporary(targetRt);

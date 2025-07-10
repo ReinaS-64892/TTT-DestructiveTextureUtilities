@@ -26,7 +26,7 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
             if (TTTImportedImage == null) { EditorUtility.DisplayDialog("ImportedImageExtractor - 実行不可能", "TTTImportedImage が存在しません！", "Ok"); return; }
 
             var canvasData = TTTImportedImage.CanvasDescription.LoadCanvasSource(AssetDatabase.GetAssetPath(TTTImportedImage.CanvasDescription));
-            var diskLoader = new UnityDiskUtil(new TextureManager(false));
+            var diskLoader = new UnityDiskUtil(false);
             var ttce = new TTCEUnityWithTTT4Unity(diskLoader);
 
             using var rt = ttce.CreateRenderTexture(TTTImportedImage.CanvasDescription.Width, TTTImportedImage.CanvasDescription.Height);

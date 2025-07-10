@@ -35,8 +35,9 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
             var duplicate = Instantiate(DomainRoot);
 
             var renderers = duplicate.GetComponentsInChildren<Renderer>().ToList();
-            var phaseDict = AvatarBuildUtils.FindAtPhase(duplicate);
-            var domain = new StackExtractedDomain(renderers, false, false, false);
+            var phaseDict = TexTransBehaviorSearch.FindAtPhase(duplicate);
+            using var tempAssetHolder = new TempAssetHolder();
+            var domain = new StackExtractedDomain(renderers, tempAssetHolder);
             domain.SaveTextureDirectory = AssetSaveHelper.CreateUniqueNewFolder(DomainRoot.name + "-StackExtractResult");
             var session = new StackTracedSession(duplicate, domain, phaseDict);
 
@@ -56,9 +57,7 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
         public string SaveTextureDirectory;
         public string SaveTextureName;
         public Dictionary<Texture, List<string>> StackTrace = new();
-        public StackExtractedDomain(List<Renderer> renderers, bool previewing, bool saveAsset = false, bool? useCompress = null) : base(renderers, previewing, saveAsset, useCompress) { }
-        public StackExtractedDomain(List<Renderer> renderers, bool previewing, IAssetSaver assetSaver, bool? useCompress = null) : base(renderers, previewing, assetSaver, useCompress) { }
-        public StackExtractedDomain(List<Renderer> previewRenderers, bool previewing, ITextureManager textureManager, IAssetSaver assetSaver) : base(previewRenderers, previewing, textureManager, assetSaver) { }
+        public StackExtractedDomain(List<Renderer> renderers, IAssetSaver assetSaver) : base(renderers, assetSaver) { }
 
         public override void AddTextureStack(Texture dist, ITTRenderTexture addTex, ITTBlendKey blendKey)
         {

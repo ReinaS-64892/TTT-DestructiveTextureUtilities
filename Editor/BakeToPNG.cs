@@ -44,54 +44,53 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
             else { target = DomainRoot; }
 
 
-            var phaseDict = AvatarBuildUtils.FindAtPhase(target);
-            var assetSaver = new AssetSaver(AssetDatabase.GenerateUniqueAssetPath(Path.Combine(outputDirectory, "OtherAssetsContainer.asset")));
+            var phaseDict = TexTransBehaviorSearch.FindAtPhase(target);
+            var savePath = AssetDatabase.GenerateUniqueAssetPath(Path.Combine(outputDirectory, "OtherAssetsContainer.asset"));
+            var assetSaver = new AssetSaver(savePath);
 
-            var deferredDestroyer = new DeferredDestroyer();
-            var compressionManager = new ToPNGCompress(outputDirectory);
-            var textureManager = new TextureManager(deferredDestroyer, new GetOriginTexture(false, deferredDestroyer.DeferredDestroyOf), compressionManager);
 
-            var domain = new AvatarDomain(target, false, textureManager, assetSaver);
+            var domain = new HookedAvatarDomain(target, assetSaver, savePath);
             var session = new TexTransBuildSession(target, domain, phaseDict);
 
             AvatarBuildUtils.ExecuteAllPhaseAndEnd(session);
             AvatarBuildUtils.DestroyITexTransToolTags(target);
-            var texDict = compressionManager.CreateCompresses();
 
-            var renderers = target.GetComponentsInChildren<Renderer>(true);
-            var mats = RendererUtility.GetFilteredMaterials(renderers);
-            var newMatPair = MaterialUtility.ReplaceTextureAll(mats, texDict);
-            foreach (var r in renderers) { r.sharedMaterials = r.sharedMaterials.Select(m => m == null ? m : (newMatPair.TryGetValue(m, out var nm) ? nm : m)).ToArray(); }
-            foreach (var mat in newMatPair.Values) { assetSaver.TransferAsset(mat); }
+            domain.CreatePNG();
             AssetDatabase.Refresh();
         }
 
 
     }
-
-    internal class ToPNGCompress : TextureCompress
+    internal class HookedAvatarDomain : AvatarDomain
     {
-        string _outputDirectory;
-        public ToPNGCompress(string outputDirectory)
+        private readonly string _savePath;
+
+        public HookedAvatarDomain(GameObject avatarRoot, IAssetSaver assetSaver, string savePath) : base(avatarRoot, assetSaver)
         {
-            _outputDirectory = outputDirectory;
+            _savePath = savePath;
         }
-        public override void CompressDeferred(IEnumerable<Renderer> renderers, OriginEqual originEqual) { }
-        public Dictionary<Texture2D, Texture2D> CreateCompresses()
+
+        public override void Dispose()
+        {
+            // base.Dispose();
+            MergeStack();
+            ReadBackToTexture2D();
+        }
+        public void CreatePNG()
         {
             var swapTexture2D = new Dictionary<Texture2D, Texture2D>();
 
-            foreach (var compressKV in _compressDict)
+            foreach (var compressKV in _renderTextureDescriptorManager.DownloadedDescriptors)
             {
                 var sourceTex2D = compressKV.Key;
                 if (sourceTex2D == null) { continue; }
-                var path = AssetSaveHelper.SavePNG(_outputDirectory, sourceTex2D);
+                var path = AssetSaveHelper.SavePNG(_savePath, sourceTex2D);
                 AssetDatabase.ImportAsset(path);
                 var importer = TextureImporter.GetAtPath(path) as TextureImporter;
-                switch (compressKV.Value)
+                switch (compressKV.Value.TextureFormat)
                 {
                     default: { break; }
-                    case TextureCompress.RefAtImporterFormat refAt:
+                    case TexTransTool.TextureManagerUtility.RefAtImporterFormat refAt:
                         {
                             importer.compressionQuality = refAt.TextureImporter.compressionQuality;
                             importer.textureCompression = refAt.TextureImporter.textureCompression;
@@ -110,7 +109,8 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
                 swapTexture2D.Add(sourceTex2D, AssetDatabase.LoadAssetAtPath<Texture2D>(path));
             }
 
-            return swapTexture2D;
+            foreach (var r in swapTexture2D)
+                this.ReplaceTexture(r.Key, r.Value);
         }
         public TextureImporterCompression GetTextureFormatQualityUnity(FormatQuality formatQuality)
         {
