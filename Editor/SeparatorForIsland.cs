@@ -26,19 +26,21 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
 
         public override void CreateUtilityPanel(VisualElement rootElement)
         {
-            var serializedObject = new SerializedObject(this);
+            rootElement.hierarchy.Add(new Label("SeparatorForIsland は現在未実装です。"));
 
-            rootElement.hierarchy.Add(new Label("テクスチャをアイランド単位で分割した個別のテクスチャーにします。"));
+            // var serializedObject = new SerializedObject(this);
 
-            rootElement.hierarchy.Add(CreateVIProperyFiled(serializedObject.FindProperty(nameof(SeparateTarget))));
-            rootElement.hierarchy.Add(CreateVIProperyFiled(serializedObject.FindProperty(nameof(IslandSelector))));
-            rootElement.hierarchy.Add(CreateVIProperyFiled(serializedObject.FindProperty(nameof(Padding))));
-            rootElement.hierarchy.Add(CreateVIProperyFiled(serializedObject.FindProperty(nameof(HighQualityPadding))));
-            rootElement.hierarchy.Add(CreateVIProperyFiled(serializedObject.FindProperty(nameof(TargetPropertyName))));
+            // rootElement.hierarchy.Add(new Label("テクスチャをアイランド単位で分割した個別のテクスチャーにします。"));
 
-            var button = new Button(Separate);
-            button.text = "Execute";
-            rootElement.hierarchy.Add(button);
+            // rootElement.hierarchy.Add(CreateVIProperyFiled(serializedObject.FindProperty(nameof(SeparateTarget))));
+            // rootElement.hierarchy.Add(CreateVIProperyFiled(serializedObject.FindProperty(nameof(IslandSelector))));
+            // rootElement.hierarchy.Add(CreateVIProperyFiled(serializedObject.FindProperty(nameof(Padding))));
+            // rootElement.hierarchy.Add(CreateVIProperyFiled(serializedObject.FindProperty(nameof(HighQualityPadding))));
+            // rootElement.hierarchy.Add(CreateVIProperyFiled(serializedObject.FindProperty(nameof(TargetPropertyName))));
+
+            // var button = new Button(Separate);
+            // button.text = "Execute";
+            // rootElement.hierarchy.Add(button);
         }
 
 
