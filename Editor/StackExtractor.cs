@@ -49,6 +49,7 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
             var resultObject = ScriptableObject.CreateInstance<StackExtractResult>();
             resultObject.result = domain.StackTrace.Select(i => new StackExtractResult.Stack() { TargetTexture = i.Key, StackImages = i.Value.Select(p => AssetDatabase.LoadAssetAtPath<Texture2D>(p)).ToList() }).ToList();
             AssetDatabase.CreateAsset(resultObject, Path.Combine(domain.SaveTextureDirectory, "StackExtractResult.asset"));
+            EditorGUIUtility.PingObject(resultObject);
         }
     }
 
