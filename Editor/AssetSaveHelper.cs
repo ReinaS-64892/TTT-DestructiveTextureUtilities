@@ -18,15 +18,20 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
 
         internal static string SavePNG(string parentPath, UnityEngine.Texture2D tex2d)
         {
-            var path = AssetDatabase.GenerateUniqueAssetPath(Path.Combine(parentPath, tex2d.name + ".png"));
+            var path = AssetDatabase.GenerateUniqueAssetPath(Path.Combine(parentPath, FilteringInvalidChars(tex2d.name) + ".png"));
             File.WriteAllBytes(path, tex2d.EncodeToPNG());
             return path;
         }
         internal static string SavePNG(UnityEngine.Texture2D tex2d)
         {
-            var path = AssetDatabase.GenerateUniqueAssetPath(Path.Combine(SaveDirectory, tex2d.name + ".png"));
+            var path = AssetDatabase.GenerateUniqueAssetPath(Path.Combine(SaveDirectory, FilteringInvalidChars(tex2d.name) + ".png"));
             File.WriteAllBytes(path, tex2d.EncodeToPNG());
             return path;
+        }
+
+        internal static string FilteringInvalidChars(string str)
+        {
+            return string.Join("_", str.Split(Path.GetInvalidFileNameChars()));
         }
     }
 }
