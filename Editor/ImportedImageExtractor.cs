@@ -3,6 +3,7 @@ using net.rs64.TexTransCoreEngineForUnity;
 using net.rs64.TexTransTool.MultiLayerImage;
 using net.rs64.TexTransTool.Utils;
 using UnityEditor;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace net.rs64.TexTransTool.DestructiveTextureUtilities
@@ -34,8 +35,10 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
 
             var tex2D = ttce.DownloadToTexture2D(rt, false);
             tex2D.name = TTTImportedImage.name + "-Extracted";
-            AssetSaveHelper.SavePNG(tex2D);
+            var extractedPath = AssetSaveHelper.SavePNG(tex2D);
             UnityEngine.Object.DestroyImmediate(tex2D);
+            AssetDatabase.Refresh();
+            EditorGUIUtility.PingObject(AssetDatabase.LoadAssetAtPath<Texture2D>(extractedPath));
         }
     }
 }
