@@ -55,17 +55,17 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
                 var meshData = new MeshData(SeparateTarget);
                 var outputDirectory = AssetSaveHelper.CreateUniqueNewFolder(SeparateTarget.name + "-IslandSeparateResult");
 
-                for (var subMeshI = 0; meshData.TriangleIndex.Length > subMeshI; subMeshI += 1)
+                for (var subMeshI = 0; meshData.TriangleVertexIndices.Length > subMeshI; subMeshI += 1)
                 {
-                    EditorUtility.DisplayProgressBar("SeparatorForIsland", "SubMesh-" + subMeshI, subMeshI / (float)meshData.TriangleIndex.Length);
-                    var progressStartAndEnd = (subMeshI / (float)meshData.TriangleIndex.Length, (subMeshI + 1) / (float)meshData.TriangleIndex.Length);
+                    EditorUtility.DisplayProgressBar("SeparatorForIsland", "SubMesh-" + subMeshI, subMeshI / (float)meshData.TriangleVertexIndices.Length);
+                    var progressStartAndEnd = (subMeshI / (float)meshData.TriangleVertexIndices.Length, (subMeshI + 1) / (float)meshData.TriangleVertexIndices.Length);
                     if (SeparateTarget.sharedMaterials.Length <= subMeshI) { continue; }
                     var material = SeparateTarget.sharedMaterials[subMeshI];
                     var texture2D = material.GetTexture(TargetPropertyName) as Texture2D;
                     if (texture2D == null) { continue; }
                     var fullTexture2D = texture2D.TryGetUnCompress();
 
-                    var islands = UnityIslandUtility.UVtoIsland(meshData.TriangleIndex[subMeshI].AsSpan(), meshData.VertexUV.AsSpan()).ToArray();
+                    var islands = UnityIslandUtility.UVtoIsland(meshData.TriangleVertexIndices[subMeshI].AsSpan(), meshData.VertexUV.AsSpan()).ToArray();
 
                     BitArray selectBitArray;
                     if (IslandSelector != null)
@@ -84,7 +84,7 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
                         var targetRt = RenderTexture.GetTemporary(fullTexture2D.width, fullTexture2D.height, 32);
                         targetRt.Clear();
 
-                        using (var triNa = new NativeArray<TriangleIndex>(islands[islandIndex].Triangles.Count, Allocator.TempJob))
+                        using (var triNa = new NativeArray<TriangleVertexIndices>(islands[islandIndex].Triangles.Count, Allocator.TempJob))
                         {
                             var writeSpan = triNa.AsSpan();
                             for (var i = 0; writeSpan.Length > i; i += 1) { writeSpan[i] = islands[islandIndex].Triangles[i]; }
