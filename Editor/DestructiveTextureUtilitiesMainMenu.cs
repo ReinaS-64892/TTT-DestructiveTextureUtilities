@@ -8,21 +8,19 @@ using UnityEditor.UIElements;
 
 namespace net.rs64.TexTransTool.DestructiveTextureUtilities
 {
-    internal class MainMenu : EditorWindow
+    internal class DestructiveTextureUtilitiesMainMenu : ScriptableObject, TTTMenu.ITTTMenuWindow
     {
-        [MenuItem("Tools/TexTransTool/DestructiveTextureUtilities")]
-        private static void ShowWindow()
+        [InitializeOnLoadMethod]
+        static void Registering()
         {
-            var window = GetWindow<MainMenu>();
-            window.titleContent = new GUIContent("DestructiveTextureUtilities");
-            window.Show();
+            TTTMenu.RegisterMenu(CreateInstance<DestructiveTextureUtilitiesMainMenu>());
         }
-        private void OnEnable() { Initialize(); }
         [SerializeField] List<DestructiveUtility> DestructiveUtilityList = new();
 
-        internal void Initialize()
+        public string MenuName => "DestructiveTextureUtilities";
+        public VisualElement CreateGUI()
         {
-            rootVisualElement.Clear();
+            var rootVisualElement = new VisualElement();
             foreach (var i in DestructiveUtilityList) { if (i != null) { DestroyImmediate(i); } }
             DestructiveUtilityList.Clear();
 
@@ -35,7 +33,7 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
 
             var root = new VisualElement();
             root.style.flexDirection = FlexDirection.Row;
-            rootVisualElement.Add(root);
+            rootVisualElement.hierarchy.Add(root);
 
             var utilitiesScrollView = new ScrollView();
             var scrollViewContainer = utilitiesScrollView.Q<VisualElement>("unity-content-container");
@@ -49,7 +47,7 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
 
             foreach (var utilType in utilities)
             {
-                var utilityI = ScriptableObject.CreateInstance(utilType) as DestructiveUtility;
+                var utilityI = CreateInstance(utilType) as DestructiveUtility;
                 DestructiveUtilityList.Add(utilityI);
 
                 var button = new Button();
@@ -63,6 +61,7 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
                 scrollViewContainer.hierarchy.Add(button);
             }
 
+            return rootVisualElement;
         }
     }
 
