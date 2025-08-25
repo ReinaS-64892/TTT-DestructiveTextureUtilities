@@ -18,8 +18,8 @@ namespace net.rs64.TexTransTool.DestructiveTextureUtilities
 
         [SerializeField] Renderer SeparateTarget;
         [SerializeField] AbstractIslandSelector IslandSelector;
-        [SerializeField] float Padding = 5f;
-        [SerializeField] bool HighQualityPadding = true;
+        // [SerializeField] float Padding = 5f;
+        // [SerializeField] bool HighQualityPadding = true;
         [SerializeField] TexTransTool.PropertyName TargetPropertyName = TexTransTool.PropertyName.DefaultValue;
 
 
